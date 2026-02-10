@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silver Nitric Acid Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        .unit {
+            color: #666;
+            font-weight: 500;
+            min-width: 80px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(42, 82, 152, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #2a5298;
+        }
+
+        .results h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-label {
+            color: #555;
+            font-weight: 500;
+        }
+
+        .result-value {
+            color: #1e3c72;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+            color: #856404;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .info {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+            color: #0c5460;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .section-title {
+            color: #2a5298;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Silver Nitric Acid Calculator</h1>
+        <p class="subtitle">Calculate materials needed for your target electrolyte</p>
+
+        <div class="input-group">
+            <label for="finalVolume">Final Electrolyte Volume</label>
+            <div class="input-wrapper">
+                <input type="number" id="finalVolume" step="1" min="0" value="500" placeholder="Enter final volume">
+                <span class="unit">mL</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="targetConc">Target Silver Concentration</label>
+            <div class="input-wrapper">
+                <input type="number" id="targetConc" step="1" min="0" value="150" placeholder="Enter target concentration">
+                <span class="unit">g/L</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="nitricConc">Nitric Acid Concentration</label>
+            <div class="input-wrapper">
+                <input type="number" id="nitricConc" step="1" min="0" max="100" value="70" placeholder="Enter concentration">
+                <span class="unit">%</span>
+            </div>
+        </div>
+
+        <button onclick="calculate()">Calculate</button>
+
+        <div id="results" class="results hidden">
+            <h2>Materials Needed</h2>
+            
+            <div class="section-title">Silver Required</div>
+            
+            <div class="result-item">
+                <span class="result-label">Silver (grams)</span>
+                <span class="result-value" id="silverGrams">-</span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">Silver (troy oz)</span>
+                <span class="result-value" id="silverOz">-</span>
+            </div>
+
+            <div class="section-title">Step 1: Dissolve Silver</div>
+
+            <div class="result-item">
+                <span class="result-label">Nitric Acid Needed</span>
+                <span class="result-value" id="nitricNeeded">-</span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">D-Water for Dissolution</span>
+                <span class="result-value" id="dwaterDissolution">-</span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">Pregnant Solution Volume</span>
+                <span class="result-value" id="pregnantVolume">-</span>
+            </div>
+
+            <div class="info">
+                <strong>Dissolution Instructions:</strong><br>
+                Add the nitric acid and D-water shown above to your silver (ratio ~45ml acid : 62ml water). Heat on a hot plate until reaction completes. The extra water accounts for evaporation during heating. If undissolved silver remains, add more acid in small increments. Once all silver is dissolved, add a small amount more silver to ensure all free nitric is consumed.
+            </div>
+
+            <div class="section-title">Step 2: Dilute to Final Volume</div>
+
+            <div class="result-item">
+                <span class="result-label">Additional D-Water Needed</span>
+                <span class="result-value" id="additionalWater">-</span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">Total D-Water Used</span>
+                <span class="result-value" id="totalWater">-</span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">Final Volume</span>
+                <span class="result-value" id="finalVolumeResult">-</span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">Final Ag Concentration</span>
+                <span class="result-value" id="finalConcentration">-</span>
+            </div>
+
+            <div class="warning">
+                <strong>Important:</strong> Ensure your electrolyte is fully saturated (no free nitric) before use. The electrolyte must be pregnant with silver to work properly and prevent dissolving your anode instead of plating to the cathode.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            // Get input values
+            const finalVolume = parseFloat(document.getElementById('finalVolume').value);
+            const targetConc = parseFloat(document.getElementById('targetConc').value);
+            const nitricConc = parseFloat(document.getElementById('nitricConc').value);
+
+            // Validation
+            if (isNaN(finalVolume) || finalVolume <= 0) {
+                alert('Please enter a valid final volume');
+                return;
+            }
+            if (isNaN(targetConc) || targetConc <= 0) {
+                alert('Please enter a valid target concentration');
+                return;
+            }
+            if (isNaN(nitricConc) || nitricConc <= 0 || nitricConc > 100) {
+                alert('Please enter a valid nitric acid concentration (1-100%)');
+                return;
+            }
+
+            // Constants
+            const OZ_TO_GRAMS = 31.1035; // troy oz to grams
+            const ML_PER_GRAM = 1.17; // mL of 70% nitric per gram silver (base ratio)
+            const WATER_TO_ACID_RATIO = 1.3889; // 62.5 ml water per 45 ml acid (allows for evaporation)
+
+            // STEP 1: Calculate silver needed based on final volume and target concentration
+            // targetConc is in g/L, finalVolume is in mL
+            const silverGrams = (targetConc * finalVolume) / 1000;
+
+            // Convert to troy oz
+            const silverOz = silverGrams / OZ_TO_GRAMS;
+
+            // STEP 2: Calculate nitric acid needed for dissolution
+            // Adjust for nitric acid concentration
+            const concentrationFactor = 70 / nitricConc;
+            const mlPerGram = ML_PER_GRAM * concentrationFactor;
+
+            // Calculate nitric acid needed for saturated solution
+            const nitricNeeded = silverGrams * mlPerGram;
+            
+            // Use ratio for D-water (more water than acid for heating/evaporation)
+            const dwaterDissolution = nitricNeeded * WATER_TO_ACID_RATIO;
+
+            // Total volume after dissolution (pregnant solution)
+            const pregnantVolume = nitricNeeded + dwaterDissolution;
+
+            // STEP 3: Calculate additional water needed to reach final volume
+            const additionalWater = finalVolume - pregnantVolume;
+
+            // Total water used
+            const totalWater = dwaterDissolution + additionalWater;
+
+            // Verify final concentration (should match target)
+            const finalConcentration = (silverGrams / finalVolume) * 1000; // g/L
+
+            // Check if calculation is valid
+            if (additionalWater < 0) {
+                alert(`Warning: The pregnant solution (${pregnantVolume.toFixed(1)} mL) exceeds your target final volume (${finalVolume} mL). You need to increase the final volume or decrease the target concentration.`);
+                // Still show results but highlight the issue
+            }
+
+            // Display results
+            document.getElementById('silverGrams').textContent = silverGrams.toFixed(2) + ' g';
+            document.getElementById('silverOz').textContent = silverOz.toFixed(3) + ' troy oz';
+            document.getElementById('nitricNeeded').textContent = nitricNeeded.toFixed(2) + ' mL';
+            document.getElementById('dwaterDissolution').textContent = dwaterDissolution.toFixed(2) + ' mL';
+            document.getElementById('pregnantVolume').textContent = pregnantVolume.toFixed(2) + ' mL';
+            document.getElementById('additionalWater').textContent = additionalWater.toFixed(2) + ' mL';
+            document.getElementById('totalWater').textContent = totalWater.toFixed(2) + ' mL';
+            document.getElementById('finalVolumeResult').textContent = finalVolume.toFixed(2) + ' mL';
+            document.getElementById('finalConcentration').textContent = finalConcentration.toFixed(2) + ' g/L';
+
+            // Show results
+            document.getElementById('results').classList.remove('hidden');
+        }
+
+        // Calculate on page load with default values
+        window.onload = function() {
+            calculate();
+        };
+    </script>
+</body>
+</html>
